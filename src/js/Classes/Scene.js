@@ -4,6 +4,9 @@ import ThreeManager from '@/Classes/ThreeManager.js';
 class Scene extends ThreeManager {
 	constructor() {
 		super();
+
+		this.object = null;
+		this.objectMaterial = null;
 	}
 
 	init(canvasId) {
@@ -28,11 +31,11 @@ class Scene extends ThreeManager {
 	setupScene() {
 		// Add box to scene
 		const geometry = new BoxGeometry(1, 1, 1);
-		const material = new MeshStandardMaterial({ color: 0xa63744, roughness: 0.5 });
-		const cube = new Mesh(geometry, material);
-		cube.castShadow = true;
-		cube.receiveShadow = true;
-		this.scene.add(cube);
+		this.objectMaterial = new MeshStandardMaterial({ color: 0xa63744, roughness: 0.5 });
+		this.object = new Mesh(geometry, this.objectMaterial);
+		this.object.castShadow = true;
+		this.object.receiveShadow = true;
+		this.scene.add(this.object);
 
 		// Add ambient light
 		const ambientLight = new AmbientLight(0xffffff, 1); // Soft white light
@@ -46,11 +49,16 @@ class Scene extends ThreeManager {
 		spotLight.shadow.mapSize.height = 1024;
 		spotLight.shadow.camera.near = 0.5;
 		spotLight.shadow.camera.far = 50;
-		spotLight.target = cube;
+		spotLight.target = this.object;
 		this.scene.add(spotLight);
 
 		// Set scene background color
 		this.scene.background = new Color(0x333333);
+	}
+
+	changeObjectColor(color) {
+		// Update color of object material
+		this.objectMaterial.color = new Color(color);
 	}
 }
 

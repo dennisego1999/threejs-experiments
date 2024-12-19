@@ -81,11 +81,12 @@ export default class ThreeManager {
 		const canvasParentDimensions = this.canvas.parentNode.getBoundingClientRect();
 
 		// Set correct aspect
-		this.camera.aspect = canvasParentDimensions.width / canvasParentDimensions.height;
+		const halfScreenWidth = window.innerWidth / 2;
+		this.camera.aspect = halfScreenWidth / canvasParentDimensions.height;
 		this.camera.updateProjectionMatrix();
 
 		// Set canvas size again
-		this.renderer.setSize(canvasParentDimensions.width, canvasParentDimensions.height);
+		this.renderer.setSize(halfScreenWidth, canvasParentDimensions.height);
 	}
 
 	animate() {
