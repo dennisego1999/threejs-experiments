@@ -9,10 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "sass": "^1.83.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.0",
+    "eslint-config-prettier": "^8.8",
+    "eslint-plugin-prettier": "^4.2",
+    "eslint-plugin-vue": "^8.5",
+    "postcss": "^8.4.49",
+    "prettier": "2.5",
+    "prettier-plugin-tailwindcss": "^0.2",
+    "tailwindcss": "^3.4.17",
     "vite": "^6.0.1"
   }
 }
