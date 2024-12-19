@@ -1,6 +1,15 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import { Clock, PCFSoftShadowMap, PerspectiveCamera, ReinhardToneMapping, Scene, WebGLRenderer } from 'three';
+import {
+	ACESFilmicToneMapping,
+	Clock,
+	PCFSoftShadowMap,
+	PerspectiveCamera,
+	ReinhardToneMapping,
+	Scene,
+	WebGLRenderer
+} from 'three';
+import { OrbitControls } from 'three/addons';
 
 export default class ThreeManager {
 	constructor() {
@@ -18,7 +27,7 @@ export default class ThreeManager {
 		this.gltfLoader.setDRACOLoader(this.dracoLoader);
 	}
 
-	init(canvasId) {
+	initThree(canvasId) {
 		// Get canvas
 		this.canvas = document.getElementById(canvasId);
 
@@ -33,7 +42,7 @@ export default class ThreeManager {
 		});
 
 		// Set size & aspect ratio
-		this.renderer.toneMapping = ReinhardToneMapping;
+		this.renderer.toneMapping = ACESFilmicToneMapping;
 		this.renderer.physicallyCorrectLights = true;
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = PCFSoftShadowMap;
@@ -41,8 +50,42 @@ export default class ThreeManager {
 		// Setup camera
 		this.setupCamera();
 
+		// Setup controls
+		this.setupControls();
+
 		// Set scene size
 		this.setSceneSize();
+	}
+
+	setupCamera() {
+		// Set perspective camera
+		this.camera = new PerspectiveCamera(35, this.canvas.offsetWidth / this.canvas.offsetHeight, 0.1, 1000);
+
+		// Set camera position
+		this.camera.position.set(0, 1, -10);
+
+		// Update camera projection matrix
+		this.camera.updateProjectionMatrix();
+
+		// Add camera to scene
+		this.scene.add(this.camera);
+	}
+
+	setupControls() {
+		// Set controls
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+	}
+
+	setSceneSize() {
+		// Get canvas parent dimensions
+		const canvasParentDimensions = this.canvas.parentNode.getBoundingClientRect();
+
+		// Set correct aspect
+		this.camera.aspect = canvasParentDimensions.width / canvasParentDimensions.height;
+		this.camera.updateProjectionMatrix();
+
+		// Set canvas size again
+		this.renderer.setSize(canvasParentDimensions.width, canvasParentDimensions.height);
 	}
 
 	animate() {
@@ -70,8 +113,6 @@ export default class ThreeManager {
 
 	render() {
 		const delta = this.clock.getDelta();
-		const elapsedTime = this.clock.getElapsedTime();
-		this.oldElapsedTime = elapsedTime;
 
 		if (this.renderAction) {
 			// Call render action
@@ -80,32 +121,6 @@ export default class ThreeManager {
 
 		// Render
 		this.renderer.render(this.scene, this.camera);
-	}
-
-	setupCamera() {
-		// Set perspective camera
-		this.camera = new PerspectiveCamera(35, this.canvas.offsetWidth / this.canvas.offsetHeight, 0.1, 1000);
-
-		// Set camera position
-		this.camera.position.set(0, 4, 10);
-
-		// Update camera projection matrix
-		this.camera.updateProjectionMatrix();
-
-		// Add camera to scene
-		this.scene.add(this.camera);
-	}
-
-	setSceneSize() {
-		// Get canvas parent dimensions
-		const canvasParentDimensions = this.canvas.parentNode.getBoundingClientRect();
-
-		// Set correct aspect
-		this.camera.aspect = canvasParentDimensions.width / canvasParentDimensions.height;
-		this.camera.updateProjectionMatrix();
-
-		// Set canvas size again
-		this.renderer.setSize(canvasParentDimensions.width, canvasParentDimensions.height);
 	}
 
 	destroy() {
@@ -161,7 +176,8 @@ export default class ThreeManager {
 		}
 	}
 
-	setupControls() {
-		// Set controls
+	resize() {
+		// Set new scene size
+		this.setSceneSize();
 	}
 }
