@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "sass": "^1.83.0",
+    "three": "^0.171.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
